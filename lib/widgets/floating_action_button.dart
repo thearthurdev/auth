@@ -4,32 +4,36 @@ import 'package:flutter/material.dart';
 class MyFAB extends StatelessWidget {
   const MyFAB({
     Key key,
-    this.onTap,
-    this.icon,
-    this.isEnabled = true,
-    this.heroTag,
-  }) : super(key: key);
+    @required IconData icon,
+    Function onTap,
+    bool isEnabled = true,
+    dynamic heroTag,
+  })  : _icon = icon,
+        _onTap = onTap,
+        _isEnabled = isEnabled,
+        _heroTag = heroTag,
+        super(key: key);
 
-  final Function onTap;
-  final IconData icon;
-  final bool isEnabled;
-  final dynamic heroTag;
+  final IconData _icon;
+  final Function _onTap;
+  final bool _isEnabled;
+  final dynamic _heroTag;
 
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: heroTag ?? "MyFAB hero",
+      tag: _heroTag ?? "FAB hero tag",
       child: Container(
         width: 48.0,
         height: 48.0,
         child: Material(
-          color: isEnabled ? kAccentColor : kAccentDisabledColor,
+          color: _isEnabled ? kAccentColor : kAccentDisabledColor,
           shape: CircleBorder(),
           child: InkWell(
-            onTap: onTap,
+            onTap: _onTap,
             customBorder: CircleBorder(),
             child: Icon(
-              icon,
+              _icon,
               color: kPrimaryColor,
             ),
           ),

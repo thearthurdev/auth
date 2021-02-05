@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 BorderRadiusGeometry kCornerRadius = BorderRadius.circular(4.0);
+const Duration kShortDuration = Duration(milliseconds: 300);
 
 const Color kPrimaryColor = Color(0xFF004257);
 const Color kAccentColor = Color(0xFF2EE9D7);
@@ -46,7 +47,7 @@ const TextStyle kFlatAccentButtonTextStyle = TextStyle(
   fontFamily: "sen",
   fontSize: 16.0,
   color: kAccentColor,
-  fontWeight: FontWeight.w500,
+  fontWeight: FontWeight.w700,
 );
 
 const TextStyle kRaisedAccentButtonTextStyle = TextStyle(

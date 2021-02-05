@@ -1,8 +1,10 @@
+import 'package:auth/pages/log_in_email_page.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/extended_floating_action_button.dart';
 import 'package:auth/widgets/flat_accent_button.dart';
 import 'package:auth/widgets/validation_checkbox_list_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:auth/utils/navigator.dart';
 
 class SignUpPasswordPage extends StatefulWidget {
   @override
@@ -11,6 +13,8 @@ class SignUpPasswordPage extends StatefulWidget {
 
 class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
   TextEditingController _textEditingController;
+  ScrollController _scrollController;
+  FocusNode _focusNode;
 
   bool _obscureText;
   bool _isValidPasswordLength;
@@ -22,6 +26,8 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
 
     _textEditingController = TextEditingController()
       ..addListener(() => _textEditingControllerListener());
+    _scrollController = ScrollController();
+    _focusNode = FocusNode()..addListener(() => _focusNodeListener());
 
     _obscureText = true;
     _isValidPasswordLength = false;
@@ -33,6 +39,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
     super.dispose();
 
     _textEditingController.dispose();
+    // _focusNode.dispose();
   }
 
   void _textEditingControllerListener() {
@@ -53,6 +60,16 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
     }
   }
 
+  void _focusNodeListener() {
+    double maxScrollExtent = _scrollController.position.maxScrollExtent;
+
+    Future.delayed(
+      const Duration(seconds: 1),
+      () => _scrollController.animateTo(maxScrollExtent + 40.0,
+          duration: kShortDuration, curve: Curves.decelerate),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,6 +81,8 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: CustomScrollView(
+        controller: _scrollController,
+        shrinkWrap: false,
         slivers: [
           SliverAppBar(
             leading: Center(
@@ -72,14 +91,20 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                 child: BackButton(),
               ),
             ),
-            actions: [FlatAccentButton(text: "Log in")],
+            actions: [
+              FlatAccentButton(
+                text: 'Log in',
+                heroTag: 'log in hero tag',
+                onTap: () => context.navigateReplace(LogInEmailPage()),
+              ),
+            ],
             backgroundColor: kPrimaryColor,
             expandedHeight: kToolbarHeight,
             pinned: true,
           ),
           SliverSafeArea(
             sliver: SliverPadding(
-              padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0.0),
+              padding: EdgeInsets.fromLTRB(24.0, 0.0, 16.0, 0.0),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
@@ -94,6 +119,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                     ),
                     SizedBox(height: 36.0),
                     TextField(
+                      focusNode: _focusNode,
                       controller: _textEditingController,
                       cursorColor: kAccentColor,
                       obscureText: _obscureText,
@@ -122,6 +148,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                           'It should have at least a number and an uppercase letter.',
                       validation: _isValidPasswordComplexity,
                     ),
+                    SizedBox(height: 104.0),
                   ],
                 ),
               ),

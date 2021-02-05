@@ -2,22 +2,31 @@ import 'package:auth/utils/consts.dart';
 import 'package:flutter/material.dart';
 
 class FlatAccentButton extends StatelessWidget {
-  const FlatAccentButton({Key key, this.onTap, this.text}) : super(key: key);
+  const FlatAccentButton({
+    Key key,
+    @required String text,
+    @required String heroTag,
+    Function onTap,
+  })  : _text = text,
+        _heroTag = heroTag,
+        _onTap = onTap,
+        super(key: key);
 
-  final Function onTap;
-  final String text;
+  final String _text;
+  final String _heroTag;
+  final Function _onTap;
 
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: "Log in hero",
+      tag: _heroTag,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 12.0),
         child: Center(
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
-              onTap: onTap,
+              onTap: _onTap,
               customBorder: RoundedRectangleBorder(
                 borderRadius: kCornerRadius,
               ),
@@ -27,7 +36,7 @@ class FlatAccentButton extends StatelessWidget {
                   vertical: 8.0,
                 ),
                 child: Text(
-                  text,
+                  _text,
                   style: kFlatAccentButtonTextStyle,
                 ),
               ),

@@ -1,3 +1,4 @@
+import 'package:auth/pages/log_in_email_page.dart';
 import 'package:auth/pages/sign_up_password_page.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/flat_accent_button.dart';
@@ -25,14 +26,20 @@ class SignUpEmailPage extends StatelessWidget {
                 child: BackButton(),
               ),
             ),
-            actions: [FlatAccentButton(text: "Log in")],
+            actions: [
+              FlatAccentButton(
+                text: 'Log in',
+                heroTag: 'log in hero tag',
+                onTap: () => context.navigateReplace(LogInEmailPage()),
+              ),
+            ],
             backgroundColor: kPrimaryColor,
             expandedHeight: kToolbarHeight,
             pinned: true,
           ),
           SliverSafeArea(
             sliver: SliverPadding(
-              padding: EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 0.0),
+              padding: EdgeInsets.fromLTRB(24.0, 0.0, 16.0, 0.0),
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
