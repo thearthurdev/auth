@@ -1,4 +1,5 @@
-import 'package:auth/pages/log_in_email_page.dart';
+import 'package:auth/pages/reset_password_page.dart';
+import 'package:auth/pages/sign_up_email_page.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/email_address_pill.dart';
 import 'package:auth/widgets/extended_floating_action_button.dart';
@@ -63,7 +64,15 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
     );
   }
 
-  void _handleResetPressed() {}
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
+  void _handleResetPressed() {
+    context.navigate(ResetPasswordPage());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,10 +96,15 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
               ),
             ),
             actions: [
-              FlatAccentButton(
-                text: 'Sign up',
-                heroTag: 'sign up hero tag',
-                onTap: () => context.navigateReplace(LogInEmailPage()),
+              Center(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: FlatAccentButton(
+                    text: 'Sign up',
+                    heroTag: 'sign up hero tag',
+                    onTap: () => context.navigateReplace(SignUpEmailPage()),
+                  ),
+                ),
               ),
             ],
             backgroundColor: kPrimaryColor,
@@ -171,11 +185,5 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
         ],
       ),
     );
-  }
-
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
   }
 }

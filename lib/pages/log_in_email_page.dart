@@ -76,10 +76,15 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             actions: [
-              FlatAccentButton(
-                text: "Sign up",
-                heroTag: 'sign up hero tag',
-                onTap: () => context.navigateReplace(SignUpUsernamePage()),
+              Center(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: FlatAccentButton(
+                    text: "Sign up",
+                    heroTag: 'sign up hero tag',
+                    onTap: () => context.navigateReplace(SignUpUsernamePage()),
+                  ),
+                ),
               ),
             ],
             backgroundColor: kPrimaryColor,

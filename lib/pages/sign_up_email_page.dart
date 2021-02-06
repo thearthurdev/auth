@@ -27,10 +27,15 @@ class SignUpEmailPage extends StatelessWidget {
               ),
             ),
             actions: [
-              FlatAccentButton(
-                text: 'Log in',
-                heroTag: 'log in hero tag',
-                onTap: () => context.navigateReplace(LogInEmailPage()),
+              Center(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: FlatAccentButton(
+                    text: 'Log in',
+                    heroTag: 'log in hero tag',
+                    onTap: () => context.navigateReplace(LogInEmailPage()),
+                  ),
+                ),
               ),
             ],
             backgroundColor: kPrimaryColor,

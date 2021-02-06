@@ -1,17 +1,14 @@
-import 'package:auth/pages/log_in_email_page.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/extended_floating_action_button.dart';
-import 'package:auth/widgets/flat_accent_button.dart';
 import 'package:auth/widgets/validation_checkbox_list_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:auth/utils/navigator.dart';
 
-class SignUpPasswordPage extends StatefulWidget {
+class NewPasswordPage extends StatefulWidget {
   @override
-  _SignUpPasswordPageState createState() => _SignUpPasswordPageState();
+  _NewPasswordPageState createState() => _NewPasswordPageState();
 }
 
-class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
+class _NewPasswordPageState extends State<NewPasswordPage> {
   TextEditingController _textEditingController;
   ScrollController _scrollController;
   FocusNode _focusNode;
@@ -93,7 +90,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       floatingActionButton: MyExtendedFAB(
-        text: 'Create account',
+        text: 'Reset password',
         isEnabled: _isValidPasswordLength && _isValidPasswordComplexity,
         onTap: () {},
       ),
@@ -103,27 +100,10 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
         shrinkWrap: false,
         slivers: [
           SliverAppBar(
-            leading: Center(
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 12.0),
-                child: BackButton(),
-              ),
-            ),
-            actions: [
-              Center(
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 12.0),
-                  child: FlatAccentButton(
-                    text: 'Log in',
-                    heroTag: 'log in hero tag',
-                    onTap: () => context.navigateReplace(LogInEmailPage()),
-                  ),
-                ),
-              ),
-            ],
+            automaticallyImplyLeading: false,
             backgroundColor: kPrimaryColor,
             expandedHeight: kToolbarHeight,
-            pinned: true,
+            pinned: false,
           ),
           SliverSafeArea(
             sliver: SliverPadding(
@@ -132,12 +112,12 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                 delegate: SliverChildListDelegate(
                   [
                     Text(
-                      "Lastly, make your account secure.",
+                      "Get back your account.",
                       style: kHeaderTextStyle,
                     ),
                     SizedBox(height: 8.0),
                     Text(
-                      "Add a password",
+                      "Provide a new password",
                       style: kSubheaderTextStyle,
                     ),
                     SizedBox(height: 36.0),

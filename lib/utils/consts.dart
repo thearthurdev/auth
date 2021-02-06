@@ -23,6 +23,8 @@ const TextStyle kSubheaderTextStyle = TextStyle(
   fontFamily: "sen",
   fontSize: 14.0,
   color: kPrimaryTextColor,
+  fontWeight: FontWeight.w400,
+  height: 1.5,
 );
 
 const TextStyle kHintTextStyle = TextStyle(
