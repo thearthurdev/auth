@@ -1,10 +1,13 @@
 import 'package:auth/pages/log_in_email_page.dart';
+import 'package:auth/providers/authentication_provider.dart';
+import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/extended_floating_action_button.dart';
 import 'package:auth/widgets/flat_accent_button.dart';
 import 'package:auth/widgets/validation_checkbox_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:auth/utils/navigator.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPasswordPage extends StatefulWidget {
   @override
@@ -12,7 +15,7 @@ class SignUpPasswordPage extends StatefulWidget {
 }
 
 class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
-  TextEditingController _textEditingController;
+  TextEditingController _passwordController;
   ScrollController _scrollController;
   FocusNode _focusNode;
 
@@ -24,8 +27,8 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
   void initState() {
     super.initState();
 
-    _textEditingController = TextEditingController()
-      ..addListener(() => _textEditingControllerListener());
+    _passwordController = TextEditingController()
+      ..addListener(() => _passwordControllerListener());
     _scrollController = ScrollController();
     _focusNode = FocusNode()..addListener(() => _focusNodeListener());
 
@@ -38,23 +41,23 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
   void dispose() {
     super.dispose();
 
-    _textEditingController.dispose();
+    _passwordController.dispose();
     // _focusNode.dispose();
   }
 
-  void _textEditingControllerListener() {
-    if (_textEditingController.text.length >= 8 &&
+  void _passwordControllerListener() {
+    if (_passwordController.text.length >= 8 &&
         _isValidPasswordLength == false) {
       setState(() => _isValidPasswordLength = true);
-    } else if (_textEditingController.text.length < 8 &&
+    } else if (_passwordController.text.length < 8 &&
         _isValidPasswordLength == true) {
       setState(() => _isValidPasswordLength = false);
     }
 
-    if (_isPasswordCompliant(_textEditingController.text) &&
+    if (_isPasswordCompliant(_passwordController.text) &&
         _isValidPasswordComplexity == false) {
       setState(() => _isValidPasswordComplexity = true);
-    } else if (!_isPasswordCompliant(_textEditingController.text) &&
+    } else if (!_isPasswordCompliant(_passwordController.text) &&
         _isValidPasswordComplexity == true) {
       setState(() => _isValidPasswordComplexity = false);
     }
@@ -88,6 +91,19 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
     return hasDigits & hasUppercase & hasLowercase;
   }
 
+  void _signUp() {
+    context
+        .read<AuthenticationProvider>()
+        .setSignUpPassword(_passwordController.text);
+
+    final String email = context.read<AuthenticationProvider>().signUpEmail;
+
+    final String password =
+        context.read<AuthenticationProvider>().signUpPassword;
+
+    context.read<AuthenticationService>().signUp(email, password);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,7 +111,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
       floatingActionButton: MyExtendedFAB(
         text: 'Create account',
         isEnabled: _isValidPasswordLength && _isValidPasswordComplexity,
-        onTap: () {},
+        onTap: () => _signUp(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: CustomScrollView(
@@ -143,7 +159,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                     SizedBox(height: 36.0),
                     TextField(
                       focusNode: _focusNode,
-                      controller: _textEditingController,
+                      controller: _passwordController,
                       cursorColor: kAccentColor,
                       obscureText: _obscureText,
                       decoration: InputDecoration(

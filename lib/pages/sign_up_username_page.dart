@@ -1,21 +1,29 @@
 import 'package:auth/pages/log_in_email_page.dart';
 import 'package:auth/pages/sign_up_email_page.dart';
+import 'package:auth/providers/authentication_provider.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/flat_accent_button.dart';
 import 'package:auth/widgets/floating_action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:auth/utils/navigator.dart';
+import 'package:provider/provider.dart';
 
 class SignUpUsernamePage extends StatelessWidget {
+  final TextEditingController _usernameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       floatingActionButton: MyFAB(
         icon: Icons.arrow_forward_rounded,
-        onTap: () => context.navigate(
-          SignUpEmailPage(),
-        ),
+        onTap: () {
+          context
+              .read<AuthenticationProvider>()
+              .setSignUpUsername(_usernameController.text);
+
+          context.navigate(SignUpEmailPage());
+        },
       ),
       body: CustomScrollView(
         slivers: [
@@ -54,6 +62,7 @@ class SignUpUsernamePage extends StatelessWidget {
                     ),
                     SizedBox(height: 36.0),
                     TextField(
+                      controller: _usernameController,
                       cursorColor: kAccentColor,
                       decoration: InputDecoration(
                         border: InputBorder.none,

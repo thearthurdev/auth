@@ -1,8 +1,13 @@
+import 'package:auth/pages/home_page.dart';
 import 'package:auth/pages/sign_up_username_page.dart';
+import 'package:auth/providers/authentication_provider.dart';
+import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,16 +37,30 @@ class Auth extends StatelessWidget {
               statusBarBrightness: Brightness.dark,
               statusBarIconBrightness: Brightness.dark,
             ),
-            child: MaterialApp(
-              title: 'Auth',
-              theme: ThemeData(
-                brightness: Brightness.dark,
-                primaryColor: kPrimaryColor,
-                accentColor: kAccentColor,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
+            child: MultiProvider(
+              providers: [
+                Provider<AuthenticationService>(
+                  create: (_) => AuthenticationService(FirebaseAuth.instance),
+                ),
+                StreamProvider(
+                  create: (context) =>
+                      context.read<AuthenticationService>().authStateChanges,
+                ),
+                ChangeNotifierProvider<AuthenticationProvider>(
+                  create: (context) => AuthenticationProvider(),
+                ),
+              ],
+              child: MaterialApp(
+                title: 'Auth',
+                theme: ThemeData(
+                  brightness: Brightness.dark,
+                  primaryColor: kPrimaryColor,
+                  accentColor: kAccentColor,
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                ),
+                home: AuthenticationWrapper(),
+                debugShowCheckedModeBanner: false,
               ),
-              home: SignUpUsernamePage(),
-              debugShowCheckedModeBanner: false,
             ),
           );
         }
@@ -50,5 +69,18 @@ class Auth extends StatelessWidget {
         return MaterialApp(home: Text('loading...'));
       },
     );
+  }
+}
+
+class AuthenticationWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final firebaseUser = context.watch<User>();
+
+    if (firebaseUser != null) {
+      return HomePage();
+    }
+
+    return SignUpUsernamePage();
   }
 }

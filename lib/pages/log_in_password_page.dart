@@ -1,5 +1,7 @@
 import 'package:auth/pages/reset_password_page.dart';
 import 'package:auth/pages/sign_up_email_page.dart';
+import 'package:auth/providers/authentication_provider.dart';
+import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/email_address_pill.dart';
 import 'package:auth/widgets/extended_floating_action_button.dart';
@@ -7,6 +9,7 @@ import 'package:auth/widgets/flat_accent_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:auth/utils/navigator.dart';
+import 'package:provider/provider.dart';
 
 class LogInPasswordPage extends StatefulWidget {
   @override
@@ -14,7 +17,7 @@ class LogInPasswordPage extends StatefulWidget {
 }
 
 class _LogInPasswordPageState extends State<LogInPasswordPage> {
-  TextEditingController _textEditingController;
+  TextEditingController _passwordController;
   ScrollController _scrollController;
   FocusNode _focusNode;
   TapGestureRecognizer _tapGestureRecognizer;
@@ -26,8 +29,8 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
   void initState() {
     super.initState();
 
-    _textEditingController = TextEditingController()
-      ..addListener(() => _textEditingControllerListener());
+    _passwordController = TextEditingController()
+      ..addListener(() => _passwordControllerListener());
     _scrollController = ScrollController();
     _focusNode = FocusNode()..addListener(() => _focusNodeListener());
     _tapGestureRecognizer = TapGestureRecognizer()..onTap = _handleResetPressed;
@@ -40,15 +43,15 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
   void dispose() {
     super.dispose();
 
-    _textEditingController.dispose();
+    _passwordController.dispose();
     _scrollController.dispose();
     _focusNode.dispose();
   }
 
-  void _textEditingControllerListener() {
-    if (_textEditingController.text.length > 0 && _enableLogInButton == false) {
+  void _passwordControllerListener() {
+    if (_passwordController.text.length > 0 && _enableLogInButton == false) {
       setState(() => _enableLogInButton = true);
-    } else if (_textEditingController.text.length < 1 &&
+    } else if (_passwordController.text.length < 1 &&
         _enableLogInButton == true) {
       setState(() => _enableLogInButton = false);
     }
@@ -74,6 +77,19 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
     context.navigate(ResetPasswordPage());
   }
 
+  void _signIn() {
+    context
+        .read<AuthenticationProvider>()
+        .setSignInPassword(_passwordController.text);
+
+    final String email = context.read<AuthenticationProvider>().logInEmail;
+
+    final String password =
+        context.read<AuthenticationProvider>().logInPassword;
+
+    context.read<AuthenticationService>().logIn(context, email, password);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +97,7 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
       floatingActionButton: MyExtendedFAB(
         text: 'Log in',
         isEnabled: _enableLogInButton,
-        onTap: () {},
+        onTap: () => _signIn(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: CustomScrollView(
@@ -136,7 +152,7 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
                           SizedBox(height: 36.0),
                           TextField(
                             focusNode: _focusNode,
-                            controller: _textEditingController,
+                            controller: _passwordController,
                             cursorColor: kAccentColor,
                             obscureText: _obscureText,
                             decoration: InputDecoration(

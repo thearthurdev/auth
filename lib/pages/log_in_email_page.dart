@@ -1,10 +1,12 @@
 import 'package:auth/pages/log_in_password_page.dart';
 import 'package:auth/pages/sign_up_username_page.dart';
+import 'package:auth/providers/authentication_provider.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/extended_floating_action_button.dart';
 import 'package:auth/widgets/flat_accent_button.dart';
 import 'package:flutter/material.dart';
 import 'package:auth/utils/navigator.dart';
+import 'package:provider/provider.dart';
 
 class LogInEmailPage extends StatefulWidget {
   @override
@@ -12,7 +14,7 @@ class LogInEmailPage extends StatefulWidget {
 }
 
 class _LogInEmailPageState extends State<LogInEmailPage> {
-  TextEditingController _textEditingController;
+  TextEditingController _emailController;
   ScrollController _scrollController;
   FocusNode _focusNode;
 
@@ -22,8 +24,8 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
   void initState() {
     super.initState();
 
-    _textEditingController = TextEditingController()
-      ..addListener(() => _textEditingControllerListener());
+    _emailController = TextEditingController()
+      ..addListener(() => _emailControllerListener());
     _scrollController = ScrollController();
     _focusNode = FocusNode()..addListener(() => _focusNodeListener());
 
@@ -34,15 +36,15 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
   void dispose() {
     super.dispose();
 
-    _textEditingController.dispose();
+    _emailController.dispose();
     _scrollController.dispose();
     _focusNode.dispose();
   }
 
-  void _textEditingControllerListener() {
-    if (_textEditingController.text.length > 0 && _enableNextButton == false) {
+  void _emailControllerListener() {
+    if (_emailController.text.length > 0 && _enableNextButton == false) {
       setState(() => _enableNextButton = true);
-    } else if (_textEditingController.text.length < 1 &&
+    } else if (_emailController.text.length < 1 &&
         _enableNextButton == true) {
       setState(() => _enableNextButton = false);
     }
@@ -66,9 +68,15 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
       floatingActionButton: MyExtendedFAB(
         text: 'Next',
         isEnabled: _enableNextButton,
-        onTap: () => context.navigate(
-          LogInPasswordPage(),
-        ),
+        onTap: () {
+          context
+              .read<AuthenticationProvider>()
+              .setSignInEmail(_emailController.text);
+
+          context.navigate(
+            LogInPasswordPage(),
+          );
+        },
       ),
       body: CustomScrollView(
         controller: _scrollController,
@@ -109,7 +117,7 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
                     SizedBox(height: 36.0),
                     TextField(
                       focusNode: _focusNode,
-                      controller: _textEditingController,
+                      controller: _emailController,
                       cursorColor: kAccentColor,
                       decoration: InputDecoration(
                         border: InputBorder.none,
