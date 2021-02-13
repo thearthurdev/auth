@@ -1,6 +1,6 @@
 import 'package:auth/pages/log_in_password_page.dart';
 import 'package:auth/pages/sign_up_username_page.dart';
-import 'package:auth/providers/authentication_provider.dart';
+import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/extended_floating_action_button.dart';
 import 'package:auth/widgets/flat_accent_button.dart';
@@ -46,8 +46,7 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
   void _emailControllerListener() {
     if (_emailController.text.length > 0 && _enableNextButton == false) {
       setState(() => _enableNextButton = true);
-    } else if (_emailController.text.length < 1 &&
-        _enableNextButton == true) {
+    } else if (_emailController.text.length < 1 && _enableNextButton == true) {
       setState(() => _enableNextButton = false);
     }
   }
@@ -62,6 +61,16 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
     );
   }
 
+  void _proceed() {
+    if (_enableNextButton) {
+      context.read<AuthenticationService>().setEmail(_emailController.text);
+
+      context.navigate(
+        LogInPasswordPage(),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,15 +79,7 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
       floatingActionButton: MyExtendedFAB(
         child: 'Next',
         isEnabled: _enableNextButton,
-        onTap: () {
-          context
-              .read<AuthenticationProvider>()
-              .setSignInEmail(_emailController.text);
-
-          context.navigate(
-            LogInPasswordPage(),
-          );
-        },
+        onTap: () => _proceed(),
       ),
       body: CustomScrollView(
         controller: _scrollController,
@@ -90,8 +91,8 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 12.0),
                   child: FlatAccentButton(
-                    text: "Sign up",
-                    heroTag: 'sign up hero tag',
+                    text: 'Sign up',
+                    heroTag: 'sign_up_hero_tag',
                     onTap: () => context.navigateReplace(SignUpUsernamePage()),
                   ),
                 ),
@@ -108,26 +109,33 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
                 delegate: SliverChildListDelegate(
                   [
                     Text(
-                      "Welcome back!",
+                      'Welcome back!',
                       style: kHeaderTextStyle,
                     ),
                     SizedBox(height: 8.0),
                     Text(
-                      "Log in to your account",
+                      'Log in to your account',
                       style: kSubheaderTextStyle,
                     ),
                     SizedBox(height: 36.0),
-                    TextField(
-                      focusNode: _focusNode,
-                      controller: _emailController,
-                      cursorColor: kAccentColor,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintStyle: kHintTextStyle,
-                        hintText: "Email address",
+                    Hero(
+                      tag: 'email_hero_tag',
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: TextField(
+                          focusNode: _focusNode,
+                          controller: _emailController,
+                          cursorColor: kAccentColor,
+                          onEditingComplete: () => _proceed(),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintStyle: kHintTextStyle,
+                            hintText: 'Email address',
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          style: kTextFieldTextStyle,
+                        ),
                       ),
-                      keyboardType: TextInputType.emailAddress,
-                      style: kTextFieldTextStyle,
                     ),
                   ],
                 ),

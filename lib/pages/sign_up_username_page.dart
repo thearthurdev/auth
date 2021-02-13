@@ -1,6 +1,6 @@
 import 'package:auth/pages/log_in_email_page.dart';
 import 'package:auth/pages/sign_up_email_page.dart';
-import 'package:auth/providers/authentication_provider.dart';
+import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/flat_accent_button.dart';
 import 'package:auth/widgets/floating_action_button.dart';
@@ -49,8 +49,8 @@ class _SignUpUsernamePageState extends State<SignUpUsernamePage> {
   void _proceed(BuildContext context) {
     if (_enableNextButton) {
       context
-          .read<AuthenticationProvider>()
-          .setSignUpUsername(_usernameController.text);
+          .read<AuthenticationService>()
+          .setUsername(_usernameController.text);
 
       context.navigate(SignUpEmailPage());
     }
@@ -75,7 +75,7 @@ class _SignUpUsernamePageState extends State<SignUpUsernamePage> {
                   margin: EdgeInsets.symmetric(horizontal: 12.0),
                   child: FlatAccentButton(
                     text: 'Log in',
-                    heroTag: 'log in hero tag',
+                    heroTag: 'log_in_hero_tag',
                     onTap: () => context.navigateReplace(LogInEmailPage()),
                   ),
                 ),
@@ -102,7 +102,7 @@ class _SignUpUsernamePageState extends State<SignUpUsernamePage> {
                     ),
                     SizedBox(height: 36.0),
                     Hero(
-                      tag: "username hero tag",
+                      tag: 'username_hero_tag',
                       child: Material(
                         type: MaterialType.transparency,
                         child: TextField(

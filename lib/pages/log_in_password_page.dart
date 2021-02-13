@@ -1,6 +1,6 @@
+import 'package:auth/pages/home_page.dart';
 import 'package:auth/pages/reset_password_page.dart';
 import 'package:auth/pages/sign_up_email_page.dart';
-import 'package:auth/providers/authentication_provider.dart';
 import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/email_address_pill.dart';
@@ -26,6 +26,7 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
 
   bool _obscureText;
   bool _enableLogInButton;
+  bool _isProcessing;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
 
     _obscureText = true;
     _enableLogInButton = false;
+    _isProcessing = false;
   }
 
   @override
@@ -79,17 +81,23 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
     context.navigate(ResetPasswordPage());
   }
 
-  void _signIn() {
-    context
-        .read<AuthenticationProvider>()
-        .setSignInPassword(_passwordController.text);
+  Future<void> _logIn() async {
+    if (_enableLogInButton) {
+      setState(() => _isProcessing = true);
 
-    final String email = context.read<AuthenticationProvider>().logInEmail;
+      context
+          .read<AuthenticationService>()
+          .setPassword(_passwordController.text);
 
-    final String password =
-        context.read<AuthenticationProvider>().logInPassword;
+      try {
+        await context.read<AuthenticationService>().logIn();
+        setState(() => _isProcessing = false);
 
-    context.read<AuthenticationService>().logIn(context, email, password);
+        context.navigateReplaceAll(HomePage());
+      } catch (e) {
+        print(e.toString());
+      }
+    }
   }
 
   @override
@@ -97,9 +105,15 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       floatingActionButton: MyExtendedFAB(
-        child: 'Log in',
+        child: _isProcessing
+            ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(kPrimaryColor),
+                ),
+              )
+            : 'Log in',
         isEnabled: _enableLogInButton,
-        onTap: () => _signIn(),
+        onTap: () => _logIn(),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: CustomScrollView(
@@ -119,7 +133,7 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
                   margin: EdgeInsets.symmetric(horizontal: 12.0),
                   child: FlatAccentButton(
                     text: 'Sign up',
-                    heroTag: 'sign up hero tag',
+                    heroTag: 'sign_up_hero_tag',
                     onTap: () => context.navigateReplace(SignUpEmailPage()),
                   ),
                 ),
@@ -141,26 +155,32 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Welcome back!",
+                            'Welcome back!',
                             style: kHeaderTextStyle,
                           ),
                           SizedBox(height: 8.0),
                           Text(
-                            "Log in to your account",
+                            'Log in to your account',
                             style: kSubheaderTextStyle,
                           ),
                           SizedBox(height: 16.0),
-                          EmailAddressPill(),
+                          EmailAddressPill(
+                            email: context.read<AuthenticationService>().email,
+                          ),
                           SizedBox(height: 36.0),
                           TextField(
                             focusNode: _focusNode,
                             controller: _passwordController,
                             cursorColor: kAccentColor,
                             obscureText: _obscureText,
+                            autofocus: true,
+                            keyboardType: TextInputType.visiblePassword,
+                            onEditingComplete: () => _logIn(),
+                            style: kTextFieldTextStyle,
                             decoration: InputDecoration(
                               border: InputBorder.none,
                               hintStyle: kHintTextStyle,
-                              hintText: "Enter password",
+                              hintText: 'Enter password',
                               suffixIcon: IconButton(
                                 onPressed: () => _togglePasswordVisibility(),
                                 color: kPrimaryTextColor,
@@ -169,8 +189,6 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
                                     : Icon(Icons.visibility_off_outlined),
                               ),
                             ),
-                            keyboardType: TextInputType.visiblePassword,
-                            style: kTextFieldTextStyle,
                           ),
                           SizedBox(height: 26.0),
                           RichText(

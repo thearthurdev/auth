@@ -114,12 +114,12 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                 delegate: SliverChildListDelegate(
                   [
                     Text(
-                      "Get back your account.",
+                      'Get back your account.',
                       style: kHeaderTextStyle,
                     ),
                     SizedBox(height: 8.0),
                     Text(
-                      "Provide a new password",
+                      'Provide a new password',
                       style: kSubheaderTextStyle,
                     ),
                     SizedBox(height: 36.0),
@@ -131,7 +131,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintStyle: kHintTextStyle,
-                        hintText: "Enter password",
+                        hintText: 'Enter password',
                         suffixIcon: IconButton(
                           onPressed: () => _togglePasswordVisibility(),
                           color: kPrimaryTextColor,

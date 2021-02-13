@@ -22,7 +22,7 @@ class MyFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: _heroTag ?? "FAB hero tag",
+      tag: _heroTag ?? 'fab_hero_tag',
       child: Container(
         width: 48.0,
         height: 48.0,

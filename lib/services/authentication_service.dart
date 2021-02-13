@@ -1,46 +1,83 @@
-import 'package:auth/pages/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:auth/utils/navigator.dart';
-import 'package:provider/provider.dart';
 
-class AuthenticationService {
+class AuthenticationService extends ChangeNotifier {
   AuthenticationService(this._firebaseAuth);
 
   final FirebaseAuth _firebaseAuth;
 
   Stream<User> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  Future<String> logIn(
-      BuildContext context, String email, String password) async {
+  String _username;
+  String _email;
+  String _password;
+
+  get username => _username;
+  get email => _email;
+  get password => _password;
+
+  void setUsername(String username) {
+    _username = username;
+    notifyListeners();
+  }
+
+  void setEmail(String email) {
+    _email = email;
+    notifyListeners();
+  }
+
+  void setPassword(String password) {
+    _password = password;
+    notifyListeners();
+  }
+
+  Future<String> logIn() async {
+    print('FireBase LogIn');
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-
-      final firebaseUser = context.read<User>();
-
-      if (firebaseUser != null) {
-        context.navigateReplace(HomePage());
-      }
-
-      return "Signed in";
+          email: _email, password: _password);
+      _username = _firebaseAuth.currentUser.displayName;
+      return 'log_in_succuessful';
     } on FirebaseAuthException catch (e) {
+      print(e.message);
       return e.message;
+    } catch (e) {
+      print(e.toString());
+      return e.toString();
     }
   }
 
-  Future<String> signUp(String email, String password) async {
-    print('xsdSDASDASAsAS');
+  Future<String> signUp() async {
     try {
+      print('1');
       await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      return "Signed up";
+          email: _email, password: _password);
+
+      final User firebaseUser = _firebaseAuth.currentUser;
+
+      firebaseUser.updateProfile(displayName: _username);
+
+      firebaseUser.reload();
+
+      return 'sign_up_successful';
     } on FirebaseAuthException catch (e) {
+      print(e.message);
       return e.message;
+    } catch (e) {
+      print(e.toString());
+      return e.toString();
     }
   }
 
-  Future<void> logOut() async {
-    await _firebaseAuth.signOut();
+  Future<String> logOut() async {
+    try {
+      await _firebaseAuth.signOut();
+      return 'log_out_successful';
+    } on FirebaseAuthException catch (e) {
+      print(e.message);
+      return (e.message);
+    } catch (e) {
+      return (e.message);
+    }
   }
 }

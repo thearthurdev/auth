@@ -1,5 +1,5 @@
+import 'package:auth/pages/home_page.dart';
 import 'package:auth/pages/log_in_email_page.dart';
-import 'package:auth/providers/authentication_provider.dart';
 import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/extended_floating_action_button.dart';
@@ -95,19 +95,23 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
     return hasDigits & hasUppercase & hasLowercase;
   }
 
-  void _signUp() async {
-    setState(() => _isProcessing = true);
-    context
-        .read<AuthenticationProvider>()
-        .setSignUpPassword(_passwordController.text);
+  Future<void> _signUp(BuildContext context) async {
+    if (_isValidPasswordLength && _isValidPasswordComplexity) {
+      setState(() => _isProcessing = true);
 
-    final String email = context.read<AuthenticationProvider>().signUpEmail;
+      context
+          .read<AuthenticationService>()
+          .setPassword(_passwordController.text);
 
-    final String password =
-        context.read<AuthenticationProvider>().signUpPassword;
+      try {
+        await context.read<AuthenticationService>().signUp();
+        setState(() => _isProcessing = false);
 
-    await context.read<AuthenticationService>().signUp(email, password);
-    setState(() => _isProcessing = false);
+        context.navigateReplaceAll(HomePage());
+      } catch (e) {
+        print(e.toString());
+      }
+    }
   }
 
   @override
@@ -123,7 +127,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
               )
             : 'Create account',
         isEnabled: _isValidPasswordLength && _isValidPasswordComplexity,
-        onTap: () => _signUp(),
+        onTap: () => _signUp(context),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: CustomScrollView(
@@ -143,7 +147,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                   margin: EdgeInsets.symmetric(horizontal: 12.0),
                   child: FlatAccentButton(
                     text: 'Log in',
-                    heroTag: 'log in hero tag',
+                    heroTag: 'log_in_hero_tag',
                     onTap: () => context.navigateReplace(LogInEmailPage()),
                   ),
                 ),
@@ -160,12 +164,12 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                 delegate: SliverChildListDelegate(
                   [
                     Text(
-                      "Lastly, make your account secure.",
+                      'Lastly, make your account secure.',
                       style: kHeaderTextStyle,
                     ),
                     SizedBox(height: 8.0),
                     Text(
-                      "Add a password",
+                      'Add a password',
                       style: kSubheaderTextStyle,
                     ),
                     SizedBox(height: 36.0),
@@ -174,10 +178,15 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                       controller: _passwordController,
                       cursorColor: kAccentColor,
                       obscureText: _obscureText,
+                      autofocus: true,
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
+                      style: kTextFieldTextStyle,
+                      onEditingComplete: () => _signUp(context),
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintStyle: kHintTextStyle,
-                        hintText: "Enter password",
+                        hintText: 'Enter password',
                         suffixIcon: IconButton(
                           onPressed: () => _togglePasswordVisibility(),
                           color: kPrimaryTextColor,
@@ -186,9 +195,6 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                               : Icon(Icons.visibility_off_outlined),
                         ),
                       ),
-                      keyboardType: TextInputType.visiblePassword,
-                      textInputAction: TextInputAction.done,
-                      style: kTextFieldTextStyle,
                     ),
                     SizedBox(height: 43.0),
                     ValidationCheckboxListTile(

@@ -1,10 +1,12 @@
 import 'package:auth/pages/new_password_page.dart';
+import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/email_address_pill.dart';
 import 'package:auth/widgets/extended_floating_action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:auth/utils/navigator.dart';
+import 'package:provider/provider.dart';
 
 class ResetPasswordPage extends StatelessWidget {
   static const String id = '/ResetPasswordPage';
@@ -42,19 +44,21 @@ class ResetPasswordPage extends StatelessWidget {
                               semanticsLabel: 'A red up arrow'),
                           SizedBox(height: 16.0),
                           Text(
-                            "Reset your password",
+                            'Reset your password',
                             style: kHeaderTextStyle,
                           ),
                           SizedBox(height: 8.0),
                           Container(
                             margin: EdgeInsets.only(right: 32.0),
                             child: Text(
-                              "A password reset link has been sent to your email address. Use it to reset your password.",
+                              'A password reset link has been sent to your email address. Use it to reset your password.',
                               style: kSubheaderTextStyle,
                             ),
                           ),
                           SizedBox(height: 16.0),
-                          EmailAddressPill(),
+                          EmailAddressPill(
+                            email: context.read<AuthenticationService>().email,
+                          ),
                           SizedBox(height: 32.0),
                           Material(
                             type: MaterialType.transparency,

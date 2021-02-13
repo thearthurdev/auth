@@ -12,7 +12,7 @@ const Color kErrorTextColor = Color(0xFFFF8282);
 const Color kValidationHintTextColor = Color(0xFF80A0AB);
 
 const TextStyle kHeaderTextStyle = TextStyle(
-  fontFamily: "merriweather",
+  fontFamily: 'merriweather',
   fontSize: 22.0,
   letterSpacing: 0.2,
   color: kPrimaryTextColor,
@@ -20,7 +20,7 @@ const TextStyle kHeaderTextStyle = TextStyle(
 );
 
 const TextStyle kSubheaderTextStyle = TextStyle(
-  fontFamily: "sen",
+  fontFamily: 'sen',
   fontSize: 14.0,
   color: kPrimaryTextColor,
   fontWeight: FontWeight.w400,
@@ -28,46 +28,46 @@ const TextStyle kSubheaderTextStyle = TextStyle(
 );
 
 const TextStyle kHintTextStyle = TextStyle(
-  fontFamily: "sen",
+  fontFamily: 'sen',
   fontSize: 16.0,
   color: kHintTextColor,
 );
 
 const TextStyle kBodyTextStyle = TextStyle(
-  fontFamily: "sen",
+  fontFamily: 'sen',
   fontSize: 16.0,
   color: kPrimaryTextColor,
 );
 
 const TextStyle kTextFieldTextStyle = TextStyle(
-  fontFamily: "sen",
+  fontFamily: 'sen',
   fontSize: 18.0,
   color: kPrimaryTextColor,
 );
 
 const TextStyle kFlatAccentButtonTextStyle = TextStyle(
-  fontFamily: "sen",
+  fontFamily: 'sen',
   fontSize: 16.0,
   color: kAccentColor,
   fontWeight: FontWeight.w700,
 );
 
 const TextStyle kRaisedAccentButtonTextStyle = TextStyle(
-  fontFamily: "sen",
+  fontFamily: 'sen',
   fontSize: 16.0,
   color: kPrimaryColor,
   fontWeight: FontWeight.w700,
 );
 
 const TextStyle kValidationHintTextStyle = TextStyle(
-  fontFamily: "sen",
+  fontFamily: 'sen',
   fontSize: 14.0,
   color: kValidationHintTextColor,
   fontWeight: FontWeight.w500,
 );
 
 const TextStyle kErrorTextStyle = TextStyle(
-  fontFamily: "sen",
+  fontFamily: 'sen',
   fontSize: 12.0,
   color: kErrorTextColor,
 );

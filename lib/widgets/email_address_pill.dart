@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 class EmailAddressPill extends StatelessWidget {
   const EmailAddressPill({
     Key key,
-  }) : super(key: key);
+    @required String email,
+  })  : _email = email,
+        super(key: key);
+
+  final String _email;
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +24,21 @@ class EmailAddressPill extends StatelessWidget {
           CircleAvatar(
             radius: 12.0,
             backgroundColor: kPrimaryColor,
-            backgroundImage: NetworkImage(
-                'https://cdn.fastly.picmonkey.com/contentful/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=800&q=70'),
+            child: Icon(
+              Icons.person,
+              size: 16.0,
+            ),
           ),
           SizedBox(width: 12.0),
-          Text(
-            'jacob@gmail.com',
-            style: kSubheaderTextStyle.copyWith(fontSize: 12.0),
+          Hero(
+            tag: 'email_hero_tag',
+            child: Material(
+              type: MaterialType.transparency,
+              child: Text(
+                _email,
+                style: kSubheaderTextStyle.copyWith(fontSize: 12.0),
+              ),
+            ),
           ),
         ],
       ),

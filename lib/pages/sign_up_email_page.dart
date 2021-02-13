@@ -1,6 +1,6 @@
 import 'package:auth/pages/log_in_email_page.dart';
 import 'package:auth/pages/sign_up_password_page.dart';
-import 'package:auth/providers/authentication_provider.dart';
+import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:auth/widgets/flat_accent_button.dart';
 import 'package:auth/widgets/floating_action_button.dart';
@@ -47,9 +47,7 @@ class _SignUpEmailPageState extends State<SignUpEmailPage> {
 
   void _proceed(BuildContext context) {
     if (_enableNextButton) {
-      context
-          .read<AuthenticationProvider>()
-          .setSignUpEmail(_emailController.text);
+      context.read<AuthenticationService>().setEmail(_emailController.text);
 
       context.navigate(SignUpPasswordPage());
     }
@@ -79,7 +77,7 @@ class _SignUpEmailPageState extends State<SignUpEmailPage> {
                   margin: EdgeInsets.symmetric(horizontal: 12.0),
                   child: FlatAccentButton(
                     text: 'Log in',
-                    heroTag: 'log in hero tag',
+                    heroTag: 'log_in_hero_tag',
                     onTap: () => context.navigateReplace(LogInEmailPage()),
                   ),
                 ),
@@ -98,19 +96,19 @@ class _SignUpEmailPageState extends State<SignUpEmailPage> {
                     Row(
                       children: [
                         Text(
-                          "Nice, ",
+                          'Nice, ',
                           style: kHeaderTextStyle,
                         ),
                         Hero(
-                          tag: "username hero tag",
+                          tag: 'username_hero_tag',
                           child: Material(
                             type: MaterialType.transparency,
                             child: Text(
                               context
-                                  .read<AuthenticationProvider>()
-                                  .signUpUsername
+                                  .read<AuthenticationService>()
+                                  .username
                                   .toString()
-                                  .split(" ")[0],
+                                  .split(' ')[0],
                               style: kHeaderTextStyle,
                             ),
                           ),
@@ -119,7 +117,7 @@ class _SignUpEmailPageState extends State<SignUpEmailPage> {
                     ),
                     SizedBox(height: 8.0),
                     Text(
-                      "Your email address",
+                      'Your email address',
                       style: kSubheaderTextStyle,
                     ),
                     SizedBox(height: 36.0),
@@ -134,7 +132,7 @@ class _SignUpEmailPageState extends State<SignUpEmailPage> {
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintStyle: kHintTextStyle,
-                        hintText: "Email address here...",
+                        hintText: 'Email address here...',
                       ),
                     ),
                   ],

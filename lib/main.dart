@@ -6,7 +6,6 @@ import 'package:auth/pages/reset_password_page.dart';
 import 'package:auth/pages/sign_up_email_page.dart';
 import 'package:auth/pages/sign_up_password_page.dart';
 import 'package:auth/pages/sign_up_username_page.dart';
-import 'package:auth/providers/authentication_provider.dart';
 import 'package:auth/services/authentication_service.dart';
 import 'package:auth/utils/consts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,15 +24,12 @@ class Auth extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<AuthenticationService>(
-          create: (_) => AuthenticationService(FirebaseAuth.instance),
+        ChangeNotifierProvider<AuthenticationService>(
+          create: (context) => AuthenticationService(FirebaseAuth.instance),
         ),
         StreamProvider(
           create: (context) =>
               context.read<AuthenticationService>().authStateChanges,
-        ),
-        ChangeNotifierProvider<AuthenticationProvider>(
-          create: (context) => AuthenticationProvider(),
         ),
       ],
       child: MaterialApp(
@@ -114,10 +110,6 @@ class AuthenticationWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
 
-    if (firebaseUser != null) {
-      return HomePage();
-    }
-
-    return SignUpUsernamePage();
+    return firebaseUser != null ? HomePage() : SignUpUsernamePage();
   }
 }
