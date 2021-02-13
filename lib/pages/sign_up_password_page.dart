@@ -10,6 +10,8 @@ import 'package:auth/utils/navigator.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPasswordPage extends StatefulWidget {
+  static const String id = '/SignUpPasswordPage';
+
   @override
   _SignUpPasswordPageState createState() => _SignUpPasswordPageState();
 }
@@ -22,6 +24,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
   bool _obscureText;
   bool _isValidPasswordLength;
   bool _isValidPasswordComplexity;
+  bool _isProcessing;
 
   @override
   void initState() {
@@ -35,6 +38,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
     _obscureText = true;
     _isValidPasswordLength = false;
     _isValidPasswordComplexity = false;
+    _isProcessing = false;
   }
 
   @override
@@ -91,7 +95,8 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
     return hasDigits & hasUppercase & hasLowercase;
   }
 
-  void _signUp() {
+  void _signUp() async {
+    setState(() => _isProcessing = true);
     context
         .read<AuthenticationProvider>()
         .setSignUpPassword(_passwordController.text);
@@ -101,7 +106,8 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
     final String password =
         context.read<AuthenticationProvider>().signUpPassword;
 
-    context.read<AuthenticationService>().signUp(email, password);
+    await context.read<AuthenticationService>().signUp(email, password);
+    setState(() => _isProcessing = false);
   }
 
   @override
@@ -109,7 +115,13 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       floatingActionButton: MyExtendedFAB(
-        text: 'Create account',
+        child: _isProcessing
+            ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(kPrimaryColor),
+                ),
+              )
+            : 'Create account',
         isEnabled: _isValidPasswordLength && _isValidPasswordComplexity,
         onTap: () => _signUp(),
       ),
@@ -174,6 +186,8 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
                               : Icon(Icons.visibility_off_outlined),
                         ),
                       ),
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
                       style: kTextFieldTextStyle,
                     ),
                     SizedBox(height: 43.0),

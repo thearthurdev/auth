@@ -9,6 +9,8 @@ import 'package:auth/utils/navigator.dart';
 import 'package:provider/provider.dart';
 
 class LogInEmailPage extends StatefulWidget {
+  static const String id = '/LogInEmailPage';
+
   @override
   _LogInEmailPageState createState() => _LogInEmailPageState();
 }
@@ -66,7 +68,7 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
       backgroundColor: kPrimaryColor,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: MyExtendedFAB(
-        text: 'Next',
+        child: 'Next',
         isEnabled: _enableNextButton,
         onTap: () {
           context
@@ -124,6 +126,7 @@ class _LogInEmailPageState extends State<LogInEmailPage> {
                         hintStyle: kHintTextStyle,
                         hintText: "Email address",
                       ),
+                      keyboardType: TextInputType.emailAddress,
                       style: kTextFieldTextStyle,
                     ),
                   ],

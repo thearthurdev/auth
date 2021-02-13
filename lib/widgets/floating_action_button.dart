@@ -30,7 +30,7 @@ class MyFAB extends StatelessWidget {
           color: _isEnabled ? kAccentColor : kAccentDisabledColor,
           shape: CircleBorder(),
           child: InkWell(
-            onTap: _onTap,
+            onTap: _isEnabled ? _onTap : null,
             customBorder: CircleBorder(),
             child: Icon(
               _icon,

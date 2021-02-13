@@ -8,8 +8,52 @@ import 'package:flutter/material.dart';
 import 'package:auth/utils/navigator.dart';
 import 'package:provider/provider.dart';
 
-class SignUpEmailPage extends StatelessWidget {
-  final TextEditingController _emailController = TextEditingController();
+class SignUpEmailPage extends StatefulWidget {
+  static const String id = '/SignUpEmailPage';
+
+  @override
+  _SignUpEmailPageState createState() => _SignUpEmailPageState();
+}
+
+class _SignUpEmailPageState extends State<SignUpEmailPage> {
+  TextEditingController _emailController;
+
+  bool _enableNextButton;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _emailController = TextEditingController()
+      ..addListener(() => _emailControllerListener());
+
+    _enableNextButton = false;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _emailController.dispose();
+  }
+
+  void _emailControllerListener() {
+    if (_emailController.text.length > 0 && _enableNextButton == false) {
+      setState(() => _enableNextButton = true);
+    } else if (_emailController.text.length < 1 && _enableNextButton == true) {
+      setState(() => _enableNextButton = false);
+    }
+  }
+
+  void _proceed(BuildContext context) {
+    if (_enableNextButton) {
+      context
+          .read<AuthenticationProvider>()
+          .setSignUpEmail(_emailController.text);
+
+      context.navigate(SignUpPasswordPage());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +61,8 @@ class SignUpEmailPage extends StatelessWidget {
       backgroundColor: kPrimaryColor,
       floatingActionButton: MyFAB(
         icon: Icons.arrow_forward_rounded,
-        onTap: () {
-          context
-              .read<AuthenticationProvider>()
-              .setSignUpEmail(_emailController.text);
-
-          context.navigate(SignUpPasswordPage());
-        },
+        isEnabled: _enableNextButton,
+        onTap: () => _proceed(context),
       ),
       body: CustomScrollView(
         slivers: [
@@ -56,9 +95,27 @@ class SignUpEmailPage extends StatelessWidget {
               sliver: SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    Text(
-                      "Nice, Jacob!",
-                      style: kHeaderTextStyle,
+                    Row(
+                      children: [
+                        Text(
+                          "Nice, ",
+                          style: kHeaderTextStyle,
+                        ),
+                        Hero(
+                          tag: "username hero tag",
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: Text(
+                              context
+                                  .read<AuthenticationProvider>()
+                                  .signUpUsername
+                                  .toString()
+                                  .split(" ")[0],
+                              style: kHeaderTextStyle,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 8.0),
                     Text(
@@ -69,12 +126,16 @@ class SignUpEmailPage extends StatelessWidget {
                     TextField(
                       controller: _emailController,
                       cursorColor: kAccentColor,
+                      autofocus: true,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      onEditingComplete: () => _proceed(context),
+                      style: kTextFieldTextStyle,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintStyle: kHintTextStyle,
                         hintText: "Email address here...",
                       ),
-                      style: kTextFieldTextStyle,
                     ),
                   ],
                 ),

@@ -4,6 +4,8 @@ import 'package:auth/widgets/validation_checkbox_list_tile.dart';
 import 'package:flutter/material.dart';
 
 class NewPasswordPage extends StatefulWidget {
+  static const String id = '/NewPasswordPage';
+
   @override
   _NewPasswordPageState createState() => _NewPasswordPageState();
 }
@@ -90,7 +92,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       floatingActionButton: MyExtendedFAB(
-        text: 'Reset password',
+        child: 'Reset password',
         isEnabled: _isValidPasswordLength && _isValidPasswordComplexity,
         onTap: () {},
       ),

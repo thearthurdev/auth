@@ -12,6 +12,8 @@ import 'package:auth/utils/navigator.dart';
 import 'package:provider/provider.dart';
 
 class LogInPasswordPage extends StatefulWidget {
+  static const String id = '/LogInPasswordPage';
+
   @override
   _LogInPasswordPageState createState() => _LogInPasswordPageState();
 }
@@ -95,7 +97,7 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       floatingActionButton: MyExtendedFAB(
-        text: 'Log in',
+        child: 'Log in',
         isEnabled: _enableLogInButton,
         onTap: () => _signIn(),
       ),
@@ -167,6 +169,7 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
                                     : Icon(Icons.visibility_off_outlined),
                               ),
                             ),
+                            keyboardType: TextInputType.visiblePassword,
                             style: kTextFieldTextStyle,
                           ),
                           SizedBox(height: 26.0),

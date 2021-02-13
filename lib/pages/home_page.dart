@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
+  static const String id = '/HomePage';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +21,7 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: MyExtendedFAB(
-        text: 'Log out',
+        child: 'Log out',
         onTap: () => context.read<AuthenticationService>().logOut(),
       ),
     );

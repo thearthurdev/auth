@@ -8,8 +8,53 @@ import 'package:flutter/material.dart';
 import 'package:auth/utils/navigator.dart';
 import 'package:provider/provider.dart';
 
-class SignUpUsernamePage extends StatelessWidget {
-  final TextEditingController _usernameController = TextEditingController();
+class SignUpUsernamePage extends StatefulWidget {
+  static const String id = '/SignUpUsernamePage';
+
+  @override
+  _SignUpUsernamePageState createState() => _SignUpUsernamePageState();
+}
+
+class _SignUpUsernamePageState extends State<SignUpUsernamePage> {
+  TextEditingController _usernameController;
+
+  bool _enableNextButton;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _usernameController = TextEditingController()
+      ..addListener(() => _usernameControllerListener());
+
+    _enableNextButton = false;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _usernameController.dispose();
+  }
+
+  void _usernameControllerListener() {
+    if (_usernameController.text.length > 0 && _enableNextButton == false) {
+      setState(() => _enableNextButton = true);
+    } else if (_usernameController.text.length < 1 &&
+        _enableNextButton == true) {
+      setState(() => _enableNextButton = false);
+    }
+  }
+
+  void _proceed(BuildContext context) {
+    if (_enableNextButton) {
+      context
+          .read<AuthenticationProvider>()
+          .setSignUpUsername(_usernameController.text);
+
+      context.navigate(SignUpEmailPage());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +62,8 @@ class SignUpUsernamePage extends StatelessWidget {
       backgroundColor: kPrimaryColor,
       floatingActionButton: MyFAB(
         icon: Icons.arrow_forward_rounded,
-        onTap: () {
-          context
-              .read<AuthenticationProvider>()
-              .setSignUpUsername(_usernameController.text);
-
-          context.navigate(SignUpEmailPage());
-        },
+        isEnabled: _enableNextButton,
+        onTap: () => _proceed(context),
       ),
       body: CustomScrollView(
         slivers: [
@@ -61,15 +101,23 @@ class SignUpUsernamePage extends StatelessWidget {
                       style: kSubheaderTextStyle,
                     ),
                     SizedBox(height: 36.0),
-                    TextField(
-                      controller: _usernameController,
-                      cursorColor: kAccentColor,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintStyle: kHintTextStyle,
-                        hintText: 'Full name here...',
+                    Hero(
+                      tag: "username hero tag",
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: TextField(
+                          controller: _usernameController,
+                          cursorColor: kAccentColor,
+                          textInputAction: TextInputAction.next,
+                          onEditingComplete: () => _proceed(context),
+                          style: kTextFieldTextStyle,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintStyle: kHintTextStyle,
+                            hintText: 'Full name here...',
+                          ),
+                        ),
                       ),
-                      style: kTextFieldTextStyle,
                     ),
                   ],
                 ),

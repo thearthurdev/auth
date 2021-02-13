@@ -7,12 +7,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:auth/utils/navigator.dart';
 
 class ResetPasswordPage extends StatelessWidget {
+  static const String id = '/ResetPasswordPage';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kPrimaryColor,
       floatingActionButton: MyExtendedFAB(
-        text: 'Back to log in',
+        child: 'Back to log in',
         onTap: () => context.popView(context),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

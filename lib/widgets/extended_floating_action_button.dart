@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 class MyExtendedFAB extends StatelessWidget {
   const MyExtendedFAB({
     Key key,
-    @required String text,
+    @required dynamic child,
     Function onTap,
     bool isEnabled = true,
     dynamic heroTag,
-  })  : _text = text,
+  })  : _child = child,
         _onTap = onTap,
         _isEnabled = isEnabled,
         _heroTag = heroTag,
         super(key: key);
 
-  final String _text;
+  final dynamic _child;
   final Function _onTap;
   final bool _isEnabled;
   final dynamic _heroTag;
@@ -24,6 +24,7 @@ class MyExtendedFAB extends StatelessWidget {
     return Hero(
       tag: _heroTag ?? "FAB hero tag",
       child: Container(
+        height: 48.0,
         margin: EdgeInsets.symmetric(horizontal: 24.0),
         child: Material(
           type: MaterialType.transparency,
@@ -36,10 +37,14 @@ class MyExtendedFAB extends StatelessWidget {
                 color: _isEnabled ? kAccentColor : kAccentDisabledColor,
                 borderRadius: kCornerRadius,
               ),
-              child: Text(
-                _text,
-                textAlign: TextAlign.center,
-                style: kRaisedAccentButtonTextStyle,
+              child: FittedBox(
+                child: _child is String
+                    ? Text(
+                        _child,
+                        textAlign: TextAlign.center,
+                        style: kRaisedAccentButtonTextStyle,
+                      )
+                    : _child,
               ),
             ),
           ),
