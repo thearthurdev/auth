@@ -1,4 +1,5 @@
 import 'package:auth/pages/home_page.dart';
+import 'package:auth/pages/new_password_page.dart';
 import 'package:auth/pages/reset_password_page.dart';
 import 'package:auth/pages/sign_up_email_page.dart';
 import 'package:auth/services/authentication_service.dart';
@@ -77,8 +78,18 @@ class _LogInPasswordPageState extends State<LogInPasswordPage> {
     });
   }
 
-  void _handleResetPressed() {
-    context.navigate(ResetPasswordPage());
+  Future<void> _handleResetPressed() async {
+    try {
+      context.navigate(ResetPasswordPage());
+
+      final String response =
+          await context.read<AuthenticationService>().resetPassword();
+      if (response == 'password_reset_email_sent') {
+        context.navigateReplace(NewPasswordPage());
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> _logIn() async {

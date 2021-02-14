@@ -32,7 +32,6 @@ class AuthenticationService extends ChangeNotifier {
   }
 
   Future<String> logIn() async {
-    print('FireBase LogIn');
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: _email, password: _password);
@@ -49,7 +48,6 @@ class AuthenticationService extends ChangeNotifier {
 
   Future<String> signUp() async {
     try {
-      print('1');
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: _email, password: _password);
 
@@ -75,9 +73,18 @@ class AuthenticationService extends ChangeNotifier {
       return 'log_out_successful';
     } on FirebaseAuthException catch (e) {
       print(e.message);
-      return (e.message);
+      return e.message;
     } catch (e) {
-      return (e.message);
+      return e.toString();
+    }
+  }
+
+  Future<String> resetPassword() async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: _email);
+      return 'password_reset_email_sent';
+    } on FirebaseAuthException catch (e) {
+      return e.message;
     }
   }
 }
